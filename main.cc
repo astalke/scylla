@@ -74,6 +74,7 @@
 #include "db/schema_tables.hh"
 
 #include "redis/controller.hh"
+#include "websocket/controller.hh"
 #include "cdc/log.hh"
 #include "cdc/cdc_extension.hh"
 #include "cdc/generation_service.hh"
@@ -1484,6 +1485,12 @@ To start the scylla server proper, simply invoke as: scylla server (or just scyl
                 }).get();
             }
             ss.local().register_protocol_server(redis_ctl);
+
+            websocket::controller websocket_ctl;
+            with_scheduling_group(dbcfg.statement_scheduling_group, [&websocket_ctl] {
+                return websocket_ctl.start_server();
+            }).get();
+            ss.local().register_protocol_server(websocket_ctl);
 
             seastar::set_abort_on_ebadf(cfg->abort_on_ebadf());
             api::set_server_done(ctx).get();

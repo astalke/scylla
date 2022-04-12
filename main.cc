@@ -1486,7 +1486,8 @@ To start the scylla server proper, simply invoke as: scylla server (or just scyl
             }
             ss.local().register_protocol_server(redis_ctl);
 
-            websocket::controller websocket_ctl;
+            //FIXME: assumes that the CQL server exists, which is not necessarily the case
+            websocket::controller websocket_ctl(cql_server_ctl.server());
             with_scheduling_group(dbcfg.statement_scheduling_group, [&websocket_ctl] {
                 return websocket_ctl.start_server();
             }).get();

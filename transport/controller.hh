@@ -53,10 +53,6 @@ class controller : public protocol_server {
     future<> subscribe_server(sharded<cql_server>& server);
     future<> unsubscribe_server(sharded<cql_server>& server);
 
-    sharded<cql_server>& server() {
-        return *_server;
-    }
-
 public:
     controller(sharded<auth::service>&, sharded<service::migration_notifier>&, sharded<gms::gossiper>&,
             sharded<cql3::query_processor>&, sharded<service::memory_limiter>&,

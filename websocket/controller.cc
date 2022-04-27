@@ -1,6 +1,7 @@
 #include "websocket/controller.hh"
 #include "service/storage_proxy.hh"
 #include <seastar/core/coroutine.hh>
+#include "db/config.hh"
 
 namespace websocket {
 
@@ -56,7 +57,8 @@ future<> controller::start_server()
 
             co_await std::move(write_loop);
         });
-        ws.listen(socket_address(ipv4_addr("127.0.0.1", 8222)));
+        const std::string addr = this->_cfg.cql_over_websocket_addr();
+        ws.listen(socket_address(ipv4_addr(addr, this->_cfg.cql_over_websocket_port())));
     });
 }
 
